@@ -1,6 +1,5 @@
 package com.rc.ecommerce.domain;
 
-import com.rc.ecommerce.enums.Role;
 import jakarta.persistence.*;
 
 import java.util.Collection;
@@ -18,7 +17,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "_user")
+@Table(name = "user")
 public class User implements UserDetails {
 
     @Id
@@ -29,7 +28,8 @@ public class User implements UserDetails {
     private String email;
     private String password;
 
-    @Enumerated(EnumType.STRING)
+    @ManyToOne
+    @JoinColumn(name = "role_id")
     private Role role;
 
     @OneToMany(mappedBy = "user")
