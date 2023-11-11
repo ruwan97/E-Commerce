@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -21,12 +23,16 @@ public class Token {
     @Column(unique = true)
     public String token;
 
+    private Date createdAt;
+
     @Enumerated(EnumType.STRING)
     public TokenType tokenType = TokenType.BEARER;
 
     public boolean revoked;
 
     public boolean expired;
+
+    private Date expiredAndRevokedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")

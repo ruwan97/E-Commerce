@@ -1,7 +1,7 @@
 -- Inserting roles
-INSERT INTO role (name) VALUES ('USER');
 INSERT INTO role (name) VALUES ('ADMIN');
 INSERT INTO role (name) VALUES ('MANAGER');
+INSERT INTO role (name) VALUES ('USER');
 
 -- Inserting permissions
 INSERT INTO permission (name) VALUES ('admin:read');
