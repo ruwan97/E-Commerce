@@ -1,7 +1,7 @@
 package com.rc.ecommerce.config;
 
 import com.rc.ecommerce.enums.Permission;
-import com.rc.ecommerce.enums.Role;
+import com.rc.ecommerce.enums.UserRole;
 import com.rc.ecommerce.jwt.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -29,6 +29,7 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 public class SecurityConfig {
 
     private static final String[] WHITE_LIST_URL = {"/api/v1/auth/**",
+            "/api/v1/user/register",
             "/v2/api-docs",
             "/v3/api-docs",
             "/v3/api-docs/**",
@@ -50,7 +51,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(req ->
                         req.requestMatchers(WHITE_LIST_URL)
                                 .permitAll()
-                                .requestMatchers("/api/v1/management/**").hasAnyRole(Role.ADMIN.getName(), Role.MANAGER.getName())
+                                .requestMatchers("/api/v1/management/**").hasAnyRole(UserRole.ADMIN.getName(), UserRole.MANAGER.getName())
                                 .requestMatchers(GET, "/api/v1/management/**").hasAnyAuthority(Permission.ADMIN_READ.getPermission(), Permission.MANAGER_READ.getPermission())
                                 .requestMatchers(POST, "/api/v1/management/**").hasAnyAuthority(Permission.ADMIN_CREATE.getPermission(), Permission.MANAGER_CREATE.getPermission())
                                 .requestMatchers(PUT, "/api/v1/management/**").hasAnyAuthority(Permission.ADMIN_UPDATE.getPermission(), Permission.MANAGER_UPDATE.getPermission())

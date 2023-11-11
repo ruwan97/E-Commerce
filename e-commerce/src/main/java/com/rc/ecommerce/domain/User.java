@@ -3,6 +3,7 @@ package com.rc.ecommerce.domain;
 import jakarta.persistence.*;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -17,8 +18,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "user")
+@Table(name = User.TABLE_NAME)
 public class User implements UserDetails {
+    public static final String TABLE_NAME = "user";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,6 +29,12 @@ public class User implements UserDetails {
     private String lastname;
     private String email;
     private String password;
+    private String address;
+    private String mobile;
+    private int status;
+    private String profileFilePath;
+    private Date createdAt;
+    private Date updatedAt;
 
     @ManyToOne
     @JoinColumn(name = "role_id")

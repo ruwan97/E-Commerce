@@ -2,8 +2,11 @@ package com.rc.ecommerce;
 
 import com.rc.ecommerce.domain.User;
 import com.rc.ecommerce.dto.RegisterRequest;
-import com.rc.ecommerce.enums.Role;
+import com.rc.ecommerce.dto.RegistrationRequest;
+import com.rc.ecommerce.enums.UserRole;
+import com.rc.ecommerce.exception.EComException;
 import com.rc.ecommerce.service.AuthenticationService;
+import com.rc.ecommerce.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -22,32 +25,36 @@ public class ECommerceApplication {
     }
 
     @Bean
-    public CommandLineRunner commandLineRunner(AuthenticationService authService) {
+    public CommandLineRunner commandLineRunner(UserService userService) {
         return args -> {
             try {
-                var admin = RegisterRequest.builder()
-                        .firstname("Admin")
-                        .lastname("Admin")
+                var admin = RegistrationRequest.builder()
+                        .firstName("Admin")
+                        .lastName("Admin")
                         .email("admin@gmail.com")
-                        .password("admin@123")
-                        .roleId(Role.ADMIN.getId())
+                        .password("Admin@123")
+                        .confirmPassword("Admin@123")
+                        .roleId(UserRole.ADMIN.getId())
+                        .isDefaultUser(true)
                         .build();
 
-                User adminUser = authService.register(admin);
+                User adminUser = userService.registerUser(admin);
                 logger.info("Admin user registered successfully. user id : {}", adminUser.getId());
 
-                var manager = RegisterRequest.builder()
-                        .firstname("Manager")
-                        .lastname("Manager")
+                var manager = RegistrationRequest.builder()
+                        .firstName("Manager")
+                        .lastName("Manager")
                         .email("manager@gmail.com")
-                        .password("manager@123")
-                        .roleId(Role.MANAGER.getId())
+                        .password("Manager@123")
+                        .confirmPassword("Manager@123")
+                        .roleId(UserRole.MANAGER.getId())
+                        .isDefaultUser(true)
                         .build();
 
-                User manaUser = authService.register(manager);
+                User manaUser = userService.registerUser(manager);
                 logger.info("Manager user registered successfully. user id : {}", manaUser.getId());
 
-            } catch (IllegalArgumentException e) {
+            } catch (IllegalArgumentException | EComException e) {
                 System.err.println("Error during default ADMIN & MANAGER user registration: " + e.getMessage());
             }
         };

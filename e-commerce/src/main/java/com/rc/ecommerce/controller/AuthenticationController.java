@@ -1,5 +1,6 @@
 package com.rc.ecommerce.controller;
 
+import com.rc.ecommerce.constants.VersionConstants;
 import com.rc.ecommerce.domain.User;
 import com.rc.ecommerce.dto.*;
 import com.rc.ecommerce.service.AuthenticationService;
@@ -20,29 +21,12 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.IOException;
 
 @RestController
-@RequestMapping("/api/v1/auth")
+@RequestMapping(VersionConstants.APP_API_VERSION + "/auth")
 @RequiredArgsConstructor
 public class AuthenticationController {
     private static final Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
 
     private final AuthenticationService authService;
-
-    @PostMapping("/register")
-    public ResponseEntity<RegisterResponse> register(@RequestBody RegisterRequest request) {
-        RegisterResponse response = new RegisterResponse();
-        try {
-            User user = authService.register(request);
-            response.setUserId(user.getId());
-            response.setMessage("Registration Success");
-
-            return ResponseEntity.ok(response);
-        } catch (IllegalArgumentException e) {
-            logger.error("ERROR {}", e.getMessage());
-            response.setUserId(null);
-            response.setMessage("An error occurred during user registration : " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-        }
-    }
 
     @PostMapping("/authenticate")
     public ResponseEntity<?> authenticate(@RequestBody AuthenticationRequest request) {
