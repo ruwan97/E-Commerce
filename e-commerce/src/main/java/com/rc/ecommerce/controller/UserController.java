@@ -1,7 +1,6 @@
 package com.rc.ecommerce.controller;
 
 import com.rc.ecommerce.constants.VersionConstants;
-import com.rc.ecommerce.domain.User;
 import com.rc.ecommerce.dto.ChangePasswordRequest;
 import com.rc.ecommerce.dto.RegistrationRequest;
 import com.rc.ecommerce.dto.Response;
@@ -17,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 
 @RestController
-@RequestMapping(VersionConstants.APP_API_VERSION + "/" + User.TABLE_NAME)
+@RequestMapping(VersionConstants.APP_API_VERSION + "/user")
 @RequiredArgsConstructor
 public class UserController {
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
@@ -36,7 +35,7 @@ public class UserController {
         }
     }
 
-    @PatchMapping
+    @PatchMapping("/reset/password")
     public ResponseEntity<?> changePassword(@RequestBody ChangePasswordRequest request, Principal connectedUser) {
         userService.changePassword(request, connectedUser);
         return ResponseEntity.ok().build();

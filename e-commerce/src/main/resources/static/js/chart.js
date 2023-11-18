@@ -2179,38 +2179,32 @@ if (barChartLg2 !== null) {
           speed: 1000,
         },
       },
-
       events: {
         animationEnd: function (chartCtx) {
           const newData = chartCtx.w.config.series[0].data.slice();
           newData.shift();
           window.setTimeout(function () {
             chartCtx.updateOptions(
-              {
-                series: [
-                  {
-                    name: "Load Average",
-                    data: newData,
+                {
+                  series: [
+                    {
+                      name: "Load Average",
+                      data: newData,
+                    },
+                  ],
+                  xaxis: {
+                    min: chartCtx.minX,
+                    max: chartCtx.maxX,
                   },
-                ],
-                xaxis: {
-                  min: chartCtx.minX,
-                  max: chartCtx.maxX,
+                  subtitle: {
+                    text: parseInt(getRangeRandom({ min: 1, max: 20 })).toString(),
+                  },
                 },
-                subtitle: {
-                  text: parseInt(
-                    getRangeRandom({ min: 1, max: 20 })
-                  ).toString(),
-                },
-              },
-              false,
-              false
+                false,
+                false
             );
           }, 300);
         },
-      },
-      toolbar: {
-        show: false,
       },
       zoom: {
         enabled: false,
@@ -2227,12 +2221,12 @@ if (barChartLg2 !== null) {
       {
         name: "Load Average",
         data: generateMinuteWiseTimeSeries(
-          new Date("12/12/2016 00:20:00").getTime(),
-          12,
-          {
-            min: 10,
-            max: 110,
-          }
+            new Date("12/12/2016 00:20:00").getTime(),
+            12,
+            {
+              min: 10,
+              max: 110,
+            }
         ),
       },
     ],
