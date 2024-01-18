@@ -1,6 +1,5 @@
-package com.rc.ecommerce.controller;
+package com.rc.ecommerce.web.controller;
 
-import com.rc.ecommerce.constants.VersionConstants;
 import com.rc.ecommerce.dto.ChangePasswordRequest;
 import com.rc.ecommerce.dto.RegistrationRequest;
 import com.rc.ecommerce.dto.Response;
@@ -16,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 
 @RestController
-@RequestMapping(VersionConstants.APP_API_VERSION + "/user")
+@RequestMapping("/user")
 @RequiredArgsConstructor
 public class UserController {
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);

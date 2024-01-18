@@ -1,6 +1,5 @@
-package com.rc.ecommerce.controller;
+package com.rc.ecommerce.web.controller;
 
-import com.rc.ecommerce.constants.VersionConstants;
 import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -8,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(VersionConstants.APP_API_VERSION + "/demo")
+@RequestMapping("/demo")
 @Hidden
 public class DemoController {
 

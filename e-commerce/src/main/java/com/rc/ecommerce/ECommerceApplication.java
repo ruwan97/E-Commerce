@@ -1,11 +1,9 @@
 package com.rc.ecommerce;
 
 import com.rc.ecommerce.domain.User;
-import com.rc.ecommerce.dto.RegisterRequest;
 import com.rc.ecommerce.dto.RegistrationRequest;
 import com.rc.ecommerce.enums.UserRole;
 import com.rc.ecommerce.exception.EComException;
-import com.rc.ecommerce.service.AuthenticationService;
 import com.rc.ecommerce.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
