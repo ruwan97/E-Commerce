@@ -18,13 +18,13 @@ import java.util.Optional;
 public class CommonUtils {
     private static final Logger logger = LoggerFactory.getLogger(CommonUtils.class);
 
-    @Value("${mobile.number.regex}")
+    @Value("${mobile.number.regex.regexp}")
     private String mobileNumberRegex;
 
-    @Value("${email.regex}")
+    @Value("${email.regex.regexp}")
     private String emailRegex;
 
-    @Value("${password.regex}")
+    @Value("${password.regex.regexp}")
     private String passwordRegex;
 
     private final RoleRepository roleRepository;
