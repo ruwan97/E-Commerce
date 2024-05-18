@@ -1,7 +1,8 @@
 package com.rc.ecommerce.web.controller;
 
-import com.rc.ecommerce.dto.AuthenticationRequest;
-import com.rc.ecommerce.dto.AuthenticationResponse;
+import com.rc.ecommerce.dto.auth.AuthRequest;
+import com.rc.ecommerce.dto.auth.AuthResponse;
+import com.rc.ecommerce.dto.auth.JwtAuth;
 import com.rc.ecommerce.dto.ErrorResponse;
 import com.rc.ecommerce.service.AuthenticationService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,16 +22,16 @@ import java.io.IOException;
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
-public class AuthenticationController {
-    private static final Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
+public class AuthController {
+    private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
 
     private final AuthenticationService authService;
 
     @PostMapping("/authenticate")
-    public ResponseEntity<?> authenticate(@RequestBody AuthenticationRequest request) {
+    public ResponseEntity<?> authenticate(@RequestBody AuthRequest request) {
         try {
-            AuthenticationResponse authenticationResponse = authService.authenticate(request);
-            return ResponseEntity.ok(authenticationResponse);
+            AuthResponse authResponse = authService.authenticate(request);
+            return ResponseEntity.ok(authResponse);
         } catch (Exception e) {
             logger.error("ERROR {}", e.getMessage());
             ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "An error occurred while user authentication : " + e.getMessage());
