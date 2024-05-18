@@ -1,6 +1,5 @@
-package com.rc.ecommerce.dto;
+package com.rc.ecommerce.dto.auth;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,9 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AuthenticationResponse {
-    @JsonProperty("access_token")
+public class JwtAuth {
     private String accessToken;
-    @JsonProperty("refresh_token")
     private String refreshToken;
 }
