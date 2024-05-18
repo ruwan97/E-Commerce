@@ -1,10 +1,10 @@
 package com.rc.ecommerce.service;
 
 import com.rc.ecommerce.domain.Role;
-import com.rc.ecommerce.dto.AuthenticationRequest;
-import com.rc.ecommerce.dto.AuthenticationResponse;
+import com.rc.ecommerce.dto.auth.*;
 import com.rc.ecommerce.dto.RegisterRequest;
 import com.rc.ecommerce.domain.Token;
+import com.rc.ecommerce.enums.AuthStatus;
 import com.rc.ecommerce.repository.RoleRepository;
 import com.rc.ecommerce.repository.TokenRepository;
 import com.rc.ecommerce.enums.TokenType;
@@ -16,6 +16,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -31,6 +32,13 @@ import java.util.Date;
 @RequiredArgsConstructor
 public class AuthenticationService {
     private static final Logger logger = LoggerFactory.getLogger(AuthenticationService.class);
+
+    @Value("${session.valid.duration}")
+    private int sessionValidDuration;
+
+    @Value("${session.renewal.duration}")
+    private int sessionRenewalDuration;
+
 
     private final UserRepository userRepository;
     private final TokenRepository tokenRepository;
@@ -52,18 +60,38 @@ public class AuthenticationService {
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(role)
                 .build();
-        var savedUser = userRepository.save(user);
-        return savedUser;
+        return userRepository.save(user);
     }
 
-    public AuthenticationResponse authenticate(AuthenticationRequest request) {
+    public AuthResponse authenticate(AuthRequest request) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
         var user = userRepository.findByEmail(request.getEmail()).orElseThrow(() -> new IllegalArgumentException("User not found"));
-        var jwtToken = jwtService.generateToken(user);
+        var accessToken = jwtService.generateToken(user);
         var refreshToken = jwtService.generateRefreshToken(user);
         revokeAllUserTokens(user);
-        saveUserToken(user, jwtToken);
-        return AuthenticationResponse.builder().accessToken(jwtToken).refreshToken(refreshToken).build();
+        saveUserToken(user, accessToken);
+
+        long currentTime = System.currentTimeMillis();
+        long validTo = currentTime + sessionValidDuration;
+        long renewAllowedTill = currentTime + sessionRenewalDuration;
+
+        // construct and return the AuthResponse
+        return AuthResponse.builder()
+                .body(AuthBody.builder()
+                        .authStatus(AuthStatus.TRUSTED)
+                        .userName(user.getEmail())
+                        .session(Session.builder()
+                                .id("1")
+                                .validFrom(currentTime)
+                                .validTo(validTo)
+                                .renewAllowedTill(renewAllowedTill)
+                                .build())
+                        .build())
+                .auth(JwtAuth.builder()
+                        .accessToken(accessToken)
+                        .refreshToken(refreshToken)
+                        .build())
+                .build();
     }
 
     // print user authorities
@@ -121,7 +149,7 @@ public class AuthenticationService {
                 var accessToken = jwtService.generateToken(user);
                 revokeAllUserTokens(user);
                 saveUserToken(user, accessToken);
-                var authResponse = AuthenticationResponse.builder()
+                var authResponse = JwtAuth.builder()
                         .accessToken(accessToken)
                         .refreshToken(refreshToken)
                         .build();
