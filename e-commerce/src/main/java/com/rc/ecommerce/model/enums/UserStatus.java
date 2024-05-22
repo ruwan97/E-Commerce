@@ -1,5 +1,8 @@
-package com.rc.ecommerce.enums;
+package com.rc.ecommerce.model.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum UserStatus {
     ACTIVE(1, "Active"),
     INACTIVE(2, "Inactive"),
@@ -14,14 +17,6 @@ public enum UserStatus {
     UserStatus(int id, String description) {
         this.id = id;
         this.description = description;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public String getDescription() {
-        return description;
     }
 
     public static UserStatus getById(int id) {

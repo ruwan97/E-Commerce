@@ -1,5 +1,8 @@
-package com.rc.ecommerce.enums;
+package com.rc.ecommerce.model.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum AuthStatus {
     TRUSTED(1),
     UNTRUSTED(2);
@@ -10,7 +13,4 @@ public enum AuthStatus {
         this.id = id;
     }
 
-    public int getId() {
-        return id;
-    }
 }
