@@ -13,13 +13,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/payment/notification")
+@RequestMapping("/payment/notify")
 public class PaymentNotificationController {
     private static final Logger logger = LoggerFactory.getLogger(PaymentNotificationController.class);
 
     private final OrderService orderService;
 
-    @PostMapping("/notify")
+    @PostMapping("/")
     public ResponseEntity<String> handlePaymentNotification(
             @RequestParam("merchant_id") String merchantId,
             @RequestParam("order_id") String orderId,
@@ -29,17 +29,23 @@ public class PaymentNotificationController {
             @RequestParam("md5sig") String md5sig) {
 
         String localMd5sig = orderService.generateMd5Sig(merchantId, orderId, payHereAmount, payHereCurrency, statusCode);
-        logger.debug("md5sig : {}", md5sig);
-        logger.debug("localMd5sig : {}", localMd5sig);
+        logger.debug("Received payment notification for order : {}", orderId);
+        logger.debug("Received md5sig : {}", md5sig);
+        logger.debug("Calculated md5sig : {}", localMd5sig);
 
-        if (localMd5sig.equals(md5sig) && "2".equals(statusCode)) {
-            logger.debug("Payment successful for order : {}", orderId);
-            orderService.updateOrderAndPaymentDetails(orderId, payHereAmount, payHereCurrency, OrderStatus.SUCCESS);
-            return ResponseEntity.ok("Payment successful for order: " + orderId);
+        if (localMd5sig.equals(md5sig)) {
+            if ("2".equals(statusCode)) {
+                logger.info("Payment successful for order : {}", orderId);
+                orderService.updateOrderAndPaymentDetails(orderId, payHereAmount, payHereCurrency, OrderStatus.SUCCESS);
+                return ResponseEntity.ok("Payment successful for order: " + orderId);
+            } else {
+                logger.warn("Payment failed for order : {}", orderId);
+                orderService.updateOrderAndPaymentDetails(orderId, payHereAmount, payHereCurrency, OrderStatus.FAILED);
+                return ResponseEntity.badRequest().body("Payment failed for order: " + orderId);
+            }
         } else {
-            logger.debug("Payment successful for order : {}", orderId);
-            orderService.updateOrderAndPaymentDetails(orderId, payHereAmount, payHereCurrency, OrderStatus.FAILED);
-            return ResponseEntity.badRequest().body("Payment verification failed for order: " + orderId);
+            logger.error("MD5 signature verification failed for order : {}", orderId);
+            return ResponseEntity.badRequest().body("MD5 signature verification failed for order: " + orderId);
         }
     }
 }

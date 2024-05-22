@@ -7,13 +7,14 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.util.Date;
 
-@RestController
+@Controller
 @RequestMapping("/order")
 @RequiredArgsConstructor
 public class OrderController {
@@ -26,10 +27,10 @@ public class OrderController {
 
     @RequestMapping("/")
     public String showOrderForm() {
-        return "orderForm";
+        return "order/orderForm";
     }
 
-    @PostMapping("/placeOrder")
+    @PostMapping("/place")
     public String checkout(
             @RequestParam("order_id") String orderId,
             @RequestParam("amount") BigDecimal amount,
@@ -52,7 +53,7 @@ public class OrderController {
                 .status(OrderStatus.PENDING)
                 .createdAt(new Date())
                 .updatedAt(new Date())
-                .notifyUrl("http://localhost:8080/order/notify")
+                .notifyUrl("http://localhost:8080/payment/notify")
                 .hash(hash)
                 .items("Order " + orderId)
                 .build();
@@ -62,7 +63,7 @@ public class OrderController {
         model.addAttribute("merchant_id", MERCHANT_ID);
         model.addAttribute("return_url", "http://localhost:8080/order/return");
         model.addAttribute("cancel_url", "http://localhost:8080/order/cancel");
-        model.addAttribute("notify_url", "http://localhost:8080/payment/notification/notify");
+        model.addAttribute("notify_url", "http://localhost:8080/payment/notify");
         model.addAttribute("order_id", orderId);
         model.addAttribute("items", order.getItems());
         model.addAttribute("currency", currency);
@@ -76,11 +77,6 @@ public class OrderController {
         model.addAttribute("country", "Sri Lanka");
         model.addAttribute("hash", hash);
 
-        return "redirect:/order/payHereCheckout";
-    }
-
-    @RequestMapping("/payHereCheckout")
-    public String payHereCheckout() {
-        return "payHereForm";
+        return "order/checkout";
     }
 }
