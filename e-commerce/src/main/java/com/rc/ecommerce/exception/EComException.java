@@ -1,5 +1,8 @@
 package com.rc.ecommerce.exception;
 
+import lombok.Getter;
+
+@Getter
 public class EComException extends Exception {
     private final int statusCode;
 
@@ -8,7 +11,4 @@ public class EComException extends Exception {
         this.statusCode = statusCode;
     }
 
-    public int getStatusCode() {
-        return statusCode;
-    }
 }

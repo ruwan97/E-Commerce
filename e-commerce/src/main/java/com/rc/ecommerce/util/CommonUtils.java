@@ -1,8 +1,8 @@
 package com.rc.ecommerce.util;
 
 
-import com.rc.ecommerce.domain.Role;
-import com.rc.ecommerce.enums.UserRole;
+import com.rc.ecommerce.model.domain.Role;
+import com.rc.ecommerce.model.enums.UserRole;
 import com.rc.ecommerce.exception.EComException;
 import com.rc.ecommerce.repository.RoleRepository;
 import org.slf4j.Logger;

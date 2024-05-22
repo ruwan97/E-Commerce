@@ -1,5 +1,8 @@
-package com.rc.ecommerce.enums;
+package com.rc.ecommerce.model.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum ProductStatus {
     AVAILABLE(1, "Available"),
     OUT_OF_STOCK(2, "Out of Stock"),
@@ -13,14 +16,6 @@ public enum ProductStatus {
     ProductStatus(int id, String description) {
         this.id = id;
         this.description = description;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public String getDescription() {
-        return description;
     }
 
     public static ProductStatus getById(int id) {

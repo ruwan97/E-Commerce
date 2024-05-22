@@ -1,4 +1,4 @@
-package com.rc.ecommerce.dto;
+package com.rc.ecommerce.model.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

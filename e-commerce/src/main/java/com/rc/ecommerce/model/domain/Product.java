@@ -1,11 +1,13 @@
-package com.rc.ecommerce.domain;
+package com.rc.ecommerce.model.domain;
 
+import com.rc.ecommerce.model.enums.ProductStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
@@ -24,13 +26,13 @@ public class Product {
     private Category category;
 
     @Column(name = "product_name")
-    private String productName;
+    private String name;
 
     @Column(name = "description")
     private String description;
 
     @Column(name = "price")
-    private double price;
+    private BigDecimal price;
 
     @Column(name = "brand")
     private String brand;
@@ -38,8 +40,9 @@ public class Product {
     @Column(name = "stock_quantity")
     private int stockQuantity;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    private int status;
+    private ProductStatus status;
 
     @Column(name = "created_at")
     private Date createdAt;
