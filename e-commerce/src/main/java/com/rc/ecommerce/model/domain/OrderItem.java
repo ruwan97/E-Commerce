@@ -1,10 +1,12 @@
-package com.rc.ecommerce.domain;
+package com.rc.ecommerce.model.domain;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
 
 @Data
 @Builder
@@ -26,7 +28,7 @@ public class OrderItem {
     private Product product;
 
     @Column(name = "price")
-    private double price;
+    private BigDecimal price;
 
     @Column(name = "quantity")
     private int quantity;

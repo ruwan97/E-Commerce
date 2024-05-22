@@ -1,5 +1,6 @@
-package com.rc.ecommerce.domain;
+package com.rc.ecommerce.model.domain;
 
+import com.rc.ecommerce.model.enums.PaymentMethodType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,7 +18,10 @@ public class PaymentMethod {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "payment_method_name")
-    private String paymentMethodName;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "payment_method_type")
+    private PaymentMethodType paymentMethodType;
 
+    @Column(name = "description")
+    private String description;
 }
