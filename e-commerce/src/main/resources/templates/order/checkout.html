@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <title>Redirecting to PayHere</title>
 </head>
-<body onload="document.forms['payHereForm'].submit()">
+<body onload="document.forms['checkout'].submit()">
 <h1>Redirecting to PayHere...</h1>
-<form name="payHereForm" method="post" action="https://sandbox.payhere.lk/pay/checkout">
+<form name="checkout" method="post" action="https://sandbox.payhere.lk/pay/checkout">
     <input type="hidden" name="merchant_id" th:value="${merchant_id}">
     <input type="hidden" name="return_url" th:value="${return_url}">
     <input type="hidden" name="cancel_url" th:value="${cancel_url}">
