@@ -72,7 +72,7 @@ public class OrderServiceImpl implements OrderService {
             order.setUpdatedAt(new Date());
             Payment payment = order.getPayment();
             if (payment != null) {
-                payment.setPaymentStatus(PaymentStatus.PAID);
+                payment.setPaymentStatus(PaymentStatus.SUCCESS);
                 payment.setPaymentAmount(new BigDecimal(amount));
                 payment.setCurrency(currency);
                 payment.setPaidAt(new Date());
