@@ -1,8 +1,8 @@
 package com.rc.ecommerce;
 
-import com.rc.ecommerce.domain.User;
-import com.rc.ecommerce.dto.RegistrationRequest;
-import com.rc.ecommerce.enums.UserRole;
+import com.rc.ecommerce.model.domain.User;
+import com.rc.ecommerce.model.dto.RegistrationRequestDto;
+import com.rc.ecommerce.model.enums.UserRole;
 import com.rc.ecommerce.exception.EComException;
 import com.rc.ecommerce.service.UserService;
 import org.slf4j.Logger;
@@ -26,7 +26,7 @@ public class ECommerceApplication {
     public CommandLineRunner commandLineRunner(UserService userService) {
         return args -> {
             try {
-                var admin = RegistrationRequest.builder()
+                var admin = RegistrationRequestDto.builder()
                         .firstName("Admin")
                         .lastName("Admin")
                         .email("admin@gmail.com")
@@ -39,7 +39,7 @@ public class ECommerceApplication {
                 User adminUser = userService.registerUser(admin);
                 logger.info("Admin user registered successfully. user id : {}", adminUser.getId());
 
-                var manager = RegistrationRequest.builder()
+                var manager = RegistrationRequestDto.builder()
                         .firstName("Manager")
                         .lastName("Manager")
                         .email("manager@gmail.com")

@@ -1,7 +1,7 @@
 package com.rc.ecommerce.web.restful.appapi.v1;
 
-import com.rc.ecommerce.dto.RegistrationRequest;
-import com.rc.ecommerce.util.Constants;
+import com.rc.ecommerce.model.dto.RegistrationRequestDto;
+import com.rc.ecommerce.constant.Constants;
 import com.rc.ecommerce.web.restful.appapi.ApiConstants;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.POST;
@@ -18,5 +18,5 @@ public interface RegistrationRestService {
     @Path("/")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response register(RegistrationRequest registrationRequest);
+    public Response register(RegistrationRequestDto registrationRequest);
 }

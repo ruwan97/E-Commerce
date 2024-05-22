@@ -1,8 +1,10 @@
 package com.rc.ecommerce.repository;
 
-import com.rc.ecommerce.domain.Review;
+import com.rc.ecommerce.model.domain.Review;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface ReviewRepository extends JpaRepository<Review, Integer> {
 }
 

@@ -1,8 +1,9 @@
-package com.rc.ecommerce.enums;
+package com.rc.ecommerce.model.enums;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+@Getter
 @RequiredArgsConstructor
 public enum UserRole {
     ADMIN(1, "ADMIN"),
@@ -10,10 +11,8 @@ public enum UserRole {
     USER(3, "USER");
 
 
-    @Getter
     private final int id;
 
-    @Getter
     private final String name;
 
     public static UserRole getById(int id) {

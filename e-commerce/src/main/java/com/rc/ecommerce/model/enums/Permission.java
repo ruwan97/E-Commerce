@@ -1,8 +1,9 @@
-package com.rc.ecommerce.enums;
+package com.rc.ecommerce.model.enums;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+@Getter
 @RequiredArgsConstructor
 public enum Permission {
     ADMIN_READ(1, "admin:read"),
@@ -14,9 +15,7 @@ public enum Permission {
     MANAGER_CREATE(7, "management:create"),
     MANAGER_DELETE(8, "management:delete");
 
-    @Getter
     private final int id;
 
-    @Getter
     private final String permission;
 }

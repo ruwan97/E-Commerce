@@ -1,6 +1,6 @@
 package com.rc.ecommerce.web.restful.util;
 
-import com.rc.ecommerce.dto.ErrorResponse;
+import com.rc.ecommerce.model.response.ErrorResponse;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
