@@ -2,39 +2,154 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Place Order</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            color: #333;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 28px; /* Increased font size */
+        }
+
+        label {
+            color: #666;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="number"],
+        select,
+        input[type="submit"] {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 8px;
+            width: 100%;
+            margin-bottom: 10px;
+            font-size: 14px;
+            box-sizing: border-box;
+            background-color: #f8f9fa;
+        }
+
+        select {
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' fill='%23000' class='bi bi-caret-down-fill' viewBox='0 0 16 16'%3E%3Cpath d='M2.672 6L8 10.672 13.328 6z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            font-size: 12px;
+        }
+
+        input[type="submit"] {
+            color: #fff;
+            padding: 10px 20px;
+            background-color: #38D2D2;
+            background-image: radial-gradient(93% 87% at 87% 89%, rgba(0, 0, 0, 0.23) 0%, transparent 86.18%), radial-gradient(66% 66% at 26% 20%, rgba(255, 255, 255, 0.55) 0%, rgba(255, 255, 255, 0) 69.79%, rgba(255, 255, 255, 0) 100%);
+            box-shadow: inset -3px -3px 9px rgba(255, 255, 255, 0.25), inset 0px 3px 9px rgba(255, 255, 255, 0.3), inset 0px 1px 1px rgba(255, 255, 255, 0.6), inset 0px -8px 36px rgba(0, 0, 0, 0.3), inset 0px 1px 5px rgba(255, 255, 255, 0.6), 2px 19px 31px rgba(0, 0, 0, 0.2);
+            border-radius: 14px;
+            font-weight: bold;
+            font-size: 14px;
+            border: 0;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+            cursor: pointer;
+            width: 100%;
+            display: block;
+            transition: background-color 0.3s ease;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #2aaba9;
+        }
+
+        h2.title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #007bff;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+    </style>
 </head>
 <body>
-<h1>Place Order</h1>
-<form action="/order/placeOrder" method="post">
-    <label for="order_id">Order ID:</label>
-    <input type="text" id="order_id" name="order_id" required><br><br>
-
-    <label for="amount">Amount:</label>
-    <input type="number" step="0.01" id="amount" name="amount" required><br><br>
-
-    <label for="currency">Currency:</label>
-    <input type="text" id="currency" name="currency" value="LKR" required><br><br>
-
-    <label for="first_name">First Name:</label>
-    <input type="text" id="first_name" name="first_name" required><br><br>
-
-    <label for="last_name">Last Name:</label>
-    <input type="text" id="last_name" name="last_name" required><br><br>
-
-    <label for="email">Email:</label>
-    <input type="email" id="email" name="email" required><br><br>
-
-    <label for="phone">Phone:</label>
-    <input type="text" id="phone" name="phone" required><br><br>
-
-    <label for="address">Address:</label>
-    <input type="text" id="address" name="address" required><br><br>
-
-    <label for="city">City:</label>
-    <input type="text" id="city" name="city" required><br><br>
-
-    <input type="submit" value="Place Order">
-</form>
+<div class="container">
+    <h2 class="title">Place Order</h2>
+    <form action="/order/place" method="post">
+        <div class="form-group">
+            <label for="order_id">Order ID:</label>
+            <input type="text" class="form-control" id="order_id" name="order_id" required>
+        </div>
+        <div class="form-group">
+            <div class="row">
+                <div class="col">
+                    <label for="amount">Amount:</label>
+                    <input type="number" step="0.01" class="form-control" id="amount" name="amount" required>
+                </div>
+                <div class="col">
+                    <label for="currency">Currency:</label>
+                    <select class="form-control" id="currency" name="currency" required>
+                        <option value="LKR" selected>LKR</option>
+                        <option value="USD">USD</option>
+                        <option value="EUR">EUR</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="row">
+                <div class="col">
+                    <label for="first_name">First Name:</label>
+                    <input type="text" class="form-control" id="first_name" name="first_name" required>
+                </div>
+                <div class="col">
+                    <label for="last_name">Last Name:</label>
+                    <input type="text" class="form-control" id="last_name" name="last_name" required>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="row">
+                <div class="col">
+                    <label for="email">Email:</label>
+                    <input type="email" class="form-control" id="email" name="email" required>
+                </div>
+                <div class="col">
+                    <label for="phone">Phone:</label>
+                    <input type="text" class="form-control" id="phone" name="phone" required>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="address">Address:</label>
+            <input type="text" class="form-control" id="address" name="address" required>
+        </div>
+        <div class="form-group">
+            <label for="city">City:</label>
+            <input type="text" class="form-control" id="city" name="city" required>
+        </div>
+        <input type="submit" class="btn btn-primary" value="Place Order">
+    </form>
+</div>
 </body>
 </html>
