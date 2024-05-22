@@ -1,6 +1,6 @@
-package com.rc.ecommerce.dto.auth;
+package com.rc.ecommerce.model.response.auth;
 
-import com.rc.ecommerce.enums.AuthStatus;
+import com.rc.ecommerce.model.enums.AuthStatus;
 import lombok.Builder;
 import lombok.Data;
 

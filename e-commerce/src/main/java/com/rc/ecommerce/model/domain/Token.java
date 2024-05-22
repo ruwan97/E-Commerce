@@ -1,6 +1,6 @@
-package com.rc.ecommerce.domain;
+package com.rc.ecommerce.model.domain;
 
-import com.rc.ecommerce.enums.TokenType;
+import com.rc.ecommerce.model.enums.TokenType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

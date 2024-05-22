@@ -1,4 +1,4 @@
-package com.rc.ecommerce.domain;
+package com.rc.ecommerce.model.domain;
 
 import jakarta.persistence.*;
 
@@ -42,6 +42,9 @@ public class User implements UserDetails {
 
     @OneToMany(mappedBy = "user")
     private List<Token> tokens;
+
+    public User(String firstName, String lastName, String email, String phone) {
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

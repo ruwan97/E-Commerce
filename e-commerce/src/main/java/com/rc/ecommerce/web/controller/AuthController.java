@@ -1,9 +1,8 @@
 package com.rc.ecommerce.web.controller;
 
-import com.rc.ecommerce.dto.auth.AuthRequest;
-import com.rc.ecommerce.dto.auth.AuthResponse;
-import com.rc.ecommerce.dto.auth.JwtAuth;
-import com.rc.ecommerce.dto.ErrorResponse;
+import com.rc.ecommerce.model.dto.AuthRequestDto;
+import com.rc.ecommerce.model.response.auth.AuthResponse;
+import com.rc.ecommerce.model.response.ErrorResponse;
 import com.rc.ecommerce.service.AuthenticationService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -28,7 +27,7 @@ public class AuthController {
     private final AuthenticationService authService;
 
     @PostMapping("/authenticate")
-    public ResponseEntity<?> authenticate(@RequestBody AuthRequest request) {
+    public ResponseEntity<?> authenticate(@RequestBody AuthRequestDto request) {
         try {
             AuthResponse authResponse = authService.authenticate(request);
             return ResponseEntity.ok(authResponse);
