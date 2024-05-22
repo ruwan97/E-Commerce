@@ -1,14 +1,15 @@
-package com.rc.ecommerce.enums;
+package com.rc.ecommerce.model.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum PaymentMethodType {
     CREDIT_CARD(1, "Credit Card"),
     DEBIT_CARD(2, "Debit Card"),
     PAYPAL(3, "PayPal"),
-    GOOGLE_PAY(4, "Google Pay"),
-    APPLE_PAY(5, "Apple Pay"),
-    CASH(6, "Cash"),
-    BANK_TRANSFER(7, "Bank Transfer"),
-    OTHER(8, "Other");
+    BANK_TRANSFER(4, "Bank Transfer"),
+    CASH_ON_DELIVERY(5, "Cash on Delivery"),
+    DEFAULT(0, "Default");
 
     private final int id;
     private final String description;
@@ -18,21 +19,17 @@ public enum PaymentMethodType {
         this.description = description;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public String getDescription() {
+    @Override
+    public String toString() {
         return description;
     }
 
     public static PaymentMethodType getById(int id) {
-        for (PaymentMethodType method : PaymentMethodType.values()) {
-            if (method.id == id) {
+        for (PaymentMethodType method : values()) {
+            if (method.getId() == id) {
                 return method;
             }
         }
-        throw new IllegalArgumentException("Invalid PaymentMethod Id: " + id);
+        throw new IllegalArgumentException("No payment method found with id " + id);
     }
 }
-
