@@ -1,6 +1,6 @@
 package com.rc.ecommerce.auditing;
 
-import com.rc.ecommerce.domain.User;
+import com.rc.ecommerce.model.domain.User;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;

@@ -1,11 +1,9 @@
 package com.rc.ecommerce.repository;
 
-import com.rc.ecommerce.model.domain.Order;
+import com.rc.ecommerce.model.domain.PaymentMethod;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface OrderRepository extends JpaRepository<Order, Integer> {
-    Order findByOrderId(String orderId);
+public interface PaymentMethodRepository extends JpaRepository<PaymentMethod, Long> {
 }
-
