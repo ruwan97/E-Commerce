@@ -1,4 +1,4 @@
-package com.rc.ecommerce.dto;
+package com.rc.ecommerce.model.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class RegistrationRequest {
+public class RegistrationRequestDto {
     private String name;
     private String email;
     private String password;

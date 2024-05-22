@@ -1,4 +1,4 @@
-package com.rc.ecommerce.enums;
+package com.rc.ecommerce.model.enums;
 
 public enum CategoryType {
     ELECTRONICS(1, "Electronics"),

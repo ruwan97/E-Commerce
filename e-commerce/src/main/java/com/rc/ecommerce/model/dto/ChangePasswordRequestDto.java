@@ -1,4 +1,4 @@
-package com.rc.ecommerce.dto;
+package com.rc.ecommerce.model.dto;
 
 import lombok.*;
 
@@ -6,7 +6,7 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ChangePasswordRequest {
+public class ChangePasswordRequestDto {
     private String currentPassword;
     private String newPassword;
     private String confirmationPassword;
