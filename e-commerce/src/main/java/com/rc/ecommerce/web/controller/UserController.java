@@ -1,8 +1,8 @@
 package com.rc.ecommerce.web.controller;
 
-import com.rc.ecommerce.dto.ChangePasswordRequest;
-import com.rc.ecommerce.dto.RegistrationRequest;
-import com.rc.ecommerce.dto.Response;
+import com.rc.ecommerce.model.dto.ChangePasswordRequestDto;
+import com.rc.ecommerce.model.dto.RegistrationRequestDto;
+import com.rc.ecommerce.model.response.Response;
 import com.rc.ecommerce.exception.EComException;
 import com.rc.ecommerce.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +23,7 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/register")
-    public ResponseEntity<Response> registerUser(@RequestBody RegistrationRequest request) {
+    public ResponseEntity<Response> registerUser(@RequestBody RegistrationRequestDto request) {
         try {
             logger.debug("UserRegistrationRequest--> {}", request);
             userService.registerUser(request);
@@ -35,7 +35,7 @@ public class UserController {
     }
 
     @PatchMapping("/reset/password")
-    public ResponseEntity<?> changePassword(@RequestBody ChangePasswordRequest request, Principal connectedUser) {
+    public ResponseEntity<?> changePassword(@RequestBody ChangePasswordRequestDto request, Principal connectedUser) {
         userService.changePassword(request, connectedUser);
         return ResponseEntity.ok().build();
     }

@@ -1,10 +1,16 @@
-package com.rc.ecommerce.enums;
+package com.rc.ecommerce.model.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum PaymentStatus {
     PENDING(1, "Pending"),
-    COMPLETED(2, "Completed"),
-    DECLINED(3, "Declined"),
-    REFUNDED(4, "Refunded");
+    PAID(2, "Paid"),
+    COD(3, "Cash On Delivery"),
+    FAILED(4, "Failed"),
+    DECLINED(5, "Declined"),
+    REFUNDED(6, "Refunded"),
+    PARTIALLY_REFUNDED(7, "Partially Refunded");
 
     private final int id;
     private final String description;
@@ -12,14 +18,6 @@ public enum PaymentStatus {
     PaymentStatus(int id, String description) {
         this.id = id;
         this.description = description;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public String getDescription() {
-        return description;
     }
 
     public static PaymentStatus getById(int id) {
