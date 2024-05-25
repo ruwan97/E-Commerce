@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -16,33 +17,31 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "customer_order")
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private String orderId;
-
     @ManyToOne
     @JoinColumn(name = "userId")
     private User user;
 
+    private String orderId;
     private String notifyUrl;
     private String hash;
     private String items;
     private BigDecimal totalAmount;
     private String shippingAddress;
+    private Date createdAt;
+    private Date updatedAt;
+
+    private String custom1;
+    private String custom2;
 
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
 
-    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL)
-    private Payment payment;
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OrderItem> orderItems = new ArrayList<>();
 
-    private Date createdAt;
-    private Date updatedAt;
-
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
-    private List<OrderItem> orderItems;
 }

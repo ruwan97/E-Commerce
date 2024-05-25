@@ -1,14 +1,15 @@
 package com.rc.ecommerce.service;
 
+import com.rc.ecommerce.exception.EComException;
 import com.rc.ecommerce.model.domain.Order;
+import com.rc.ecommerce.model.dto.PlaceOrderRequestDTO;
 import com.rc.ecommerce.model.enums.OrderStatus;
 
 public interface OrderService {
-    String generateHash(String orderId, double amount, String currency);
+    Order findOrderByOrderId(String orderId);
 
-    String generateMd5Sig(String merchantId, String orderId, String amount, String currency, String status);
+    Order saveOrder(PlaceOrderRequestDTO orderRequestDTO, String hash) throws EComException;
 
-    void saveOrder(Order order);
+    void updateOrderStatus(String orderId, OrderStatus orderStatus);
 
-    void updateOrderAndPaymentDetails(String orderId, String amount, String currency, OrderStatus orderStatus);
 }

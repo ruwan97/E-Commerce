@@ -4,11 +4,10 @@ import lombok.Getter;
 
 @Getter
 public enum PaymentStatus {
-    SUCCESS(1, "Success"),
-    PENDING(2, "Pending"),
-    CANCELED(3, "Cancelled"),
-    FAILED(4, "Failed"),
-    CHARGE_BACK(5, "Charged Back");
+    SUCCESS(2, "Success"),
+    PENDING(0, "Pending"),
+    CANCELED(-1, "Cancelled"),
+    FAILED(-2, "Failed");
 
     private final int id;
     private final String description;

@@ -1,83 +1,88 @@
 package com.rc.ecommerce.service.impl;
 
+import com.rc.ecommerce.exception.EComException;
 import com.rc.ecommerce.model.domain.*;
+import com.rc.ecommerce.model.dto.OrderItemDTO;
+import com.rc.ecommerce.model.dto.PlaceOrderRequestDTO;
 import com.rc.ecommerce.model.enums.OrderStatus;
-import com.rc.ecommerce.model.enums.PaymentStatus;
 import com.rc.ecommerce.repository.*;
 import com.rc.ecommerce.service.OrderService;
+import com.rc.ecommerce.service.ProductService;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
+    private static final Logger logger = LoggerFactory.getLogger(OrderServiceImpl.class);
 
     private final OrderRepository orderRepository;
+    private final ProductService productService;
 
-    @Value("${payHere.merchantId}")
-    private String MERCHANT_ID;
-
-    @Value("${payHere.merchantSecret}")
-    private String MERCHANT_SECRET;
+    @Value("${payHere.notify.url}")
+    private String notifyUrl;
 
     @Override
-    public String generateHash(String orderId, double amount, String currency) {
-        String hashedSecret = getMd5(MERCHANT_SECRET).toUpperCase();
-        DecimalFormat df = new DecimalFormat("0.00");
-        String amountFormatted = df.format(amount);
-        String data = MERCHANT_ID + orderId + amountFormatted + currency + hashedSecret;
-        return getMd5(data).toUpperCase();
+    public Order findOrderByOrderId(String orderId) {
+        return orderRepository.findByOrderId(orderId);
     }
 
     @Override
-    public String generateMd5Sig(String merchantId, String orderId, String amount, String currency, String statusCode) {
-        String hashedSecret = getMd5(MERCHANT_SECRET).toUpperCase();
-        String data = merchantId + orderId + amount + currency + statusCode + hashedSecret;
-        return getMd5(data).toUpperCase();
-    }
+    public Order saveOrder(PlaceOrderRequestDTO orderRequestDTO, String hash) throws EComException {
+        Order order = Order.builder()
+                .orderId(orderRequestDTO.getOrderId())
+                .totalAmount(orderRequestDTO.getAmount())
+                .shippingAddress(orderRequestDTO.getAddress())
+                .status(OrderStatus.PENDING)
+                .createdAt(new Date())
+                .updatedAt(new Date())
+                .notifyUrl(notifyUrl)
+                .hash(hash)
+                .build();
 
-    private String getMd5(String input) {
-        try {
-            MessageDigest md = MessageDigest.getInstance("MD5");
-            byte[] messageDigest = md.digest(input.getBytes());
-            StringBuilder sb = new StringBuilder();
-            for (byte b : messageDigest) {
-                sb.append(String.format("%02x", b));
+        List<OrderItem> orderItems = new ArrayList<>();
+        for (OrderItemDTO itemDTO : orderRequestDTO.getItems()) {
+            OrderItem orderItem = new OrderItem();
+            Optional<Product> product = productService.getProductById(itemDTO.getProductId());
+            if (product.isPresent()) {
+                orderItem.setProduct(product.get());
+                orderItem.setPrice(product.get().getPrice());
+                orderItem.setQuantity(itemDTO.getQuantity());
+                orderItem.setOrder(order);
+                orderItems.add(orderItem);
+            } else {
+                throw new EComException(HttpStatus.BAD_REQUEST.value(), "Product not found for product id : " + itemDTO.getProductId());
             }
-            return sb.toString();
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
         }
-    }
 
-    @Override
-    public void saveOrder(Order order) {
-        orderRepository.save(order);
+        order.setOrderItems(orderItems);
+
+        order = orderRepository.save(order);
+        return order;
     }
 
     @Override
     @Transactional
-    public void updateOrderAndPaymentDetails(String orderId, String amount, String currency, OrderStatus orderStatus) {
+    public void updateOrderStatus(String orderId, OrderStatus orderStatus) {
         Order order = orderRepository.findByOrderId(orderId);
         if (order != null) {
             order.setStatus(orderStatus);
             order.setUpdatedAt(new Date());
-            Payment payment = order.getPayment();
-            if (payment != null) {
-                payment.setPaymentStatus(PaymentStatus.SUCCESS);
-                payment.setPaymentAmount(new BigDecimal(amount));
-                payment.setCurrency(currency);
-                payment.setPaidAt(new Date());
-            }
             orderRepository.save(order);
+            logger.debug("Order " + orderId + " status updated to " + orderStatus);
+        } else {
+            logger.warn("Order not found: " + orderId);
         }
     }
 }

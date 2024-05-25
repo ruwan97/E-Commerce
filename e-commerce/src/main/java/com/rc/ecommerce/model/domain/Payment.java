@@ -15,19 +15,21 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "payment")
 public class Payment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private String paymentId;
-
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id", unique = true)
     private Order order;
 
-    private String statusCode;
+    @ManyToOne
+    @JoinColumn(name = "payment_method_id")
+    private PaymentMethod paymentMethod;
+
+    private String paymentId;
+    private int statusCode;
     private String method;
     private String statusMessage;
     private String cardHolderName;
@@ -35,16 +37,11 @@ public class Payment {
     private String cardExpiry;
     private String chargeId;
     private Date paidAt;
-    private Date createdAt;
-
-    @ManyToOne
-    @JoinColumn(name = "payment_method_id")
-    private PaymentMethod paymentMethod;
-
     private String currency;
     private BigDecimal paymentAmount;
+    private String customerToken;
+    private Date createdAt;
 
     @Enumerated(EnumType.STRING)
     private PaymentStatus paymentStatus;
 }
-

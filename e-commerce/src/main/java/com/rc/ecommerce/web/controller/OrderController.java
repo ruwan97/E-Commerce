@@ -1,18 +1,23 @@
 package com.rc.ecommerce.web.controller;
 
+import com.rc.ecommerce.exception.EComException;
+import com.rc.ecommerce.model.dto.PlaceOrderResponseDTO;
 import com.rc.ecommerce.model.domain.Order;
+import com.rc.ecommerce.model.dto.PlaceOrderRequestDTO;
 import com.rc.ecommerce.model.enums.OrderStatus;
 import com.rc.ecommerce.service.OrderService;
+import com.rc.ecommerce.service.PayHereService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.view.RedirectView;
+import org.springframework.web.util.UriComponentsBuilder;
 
-import java.math.BigDecimal;
-import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/order")
@@ -21,9 +26,22 @@ public class OrderController {
     private static final Logger logger = LoggerFactory.getLogger(OrderController.class);
 
     private final OrderService orderService;
+    private final PayHereService payHereService;
 
-    @Value("${payHere.merchantId}")
-    private String MERCHANT_ID;
+    @Value("${payHere.merchant.id}")
+    private String merchantId;
+
+    @Value("${payHere.notify.url}")
+    private String notifyUrl;
+
+    @Value("${payHere.return.url}")
+    private String returnUrl;
+
+    @Value("${payHere.cancel.url}")
+    private String cancelUrl;
+
+    @Value("${payHere.checkout.url}")
+    private String checkoutUrl;
 
     @RequestMapping("/")
     public String showOrderForm() {
@@ -31,52 +49,61 @@ public class OrderController {
     }
 
     @PostMapping("/place")
-    public String checkout(
-            @RequestParam("order_id") String orderId,
-            @RequestParam("amount") BigDecimal amount,
-            @RequestParam("currency") String currency,
-            @RequestParam("first_name") String firstName,
-            @RequestParam("last_name") String lastName,
-            @RequestParam("email") String email,
-            @RequestParam("phone") String phone,
-            @RequestParam("address") String address,
-            @RequestParam("city") String city,
-            Model model) {
+    public RedirectView placeOrder(@RequestBody PlaceOrderRequestDTO request) throws EComException {
+        // generate hash
+        String hash = payHereService.generateHash(request.getOrderId(), request.getAmount().doubleValue(), request.getCurrency());
+        logger.debug("Hash: {}", hash);
 
-        String hash = orderService.generateHash(orderId, amount.doubleValue(), currency);
-        logger.debug("hash : {}", hash);
+        // save order
+        Order order = orderService.saveOrder(request, hash);
 
-        Order order = Order.builder()
-                .orderId(orderId)
-                .totalAmount(amount)
-                .shippingAddress(address)
-                .status(OrderStatus.PENDING)
-                .createdAt(new Date())
-                .updatedAt(new Date())
-                .notifyUrl("http://localhost:8080/payment/notify")
-                .hash(hash)
-                .items("Order " + orderId)
-                .build();
+        // construct parameters
+        Map<String, String> params = getParams(request, order, hash);
 
-        orderService.saveOrder(order);
+        // construct redirect URL
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(checkoutUrl);
+        params.forEach(builder::queryParam);
+        String redirectUrl = builder.build().encode().toUriString();
 
-        model.addAttribute("merchant_id", MERCHANT_ID);
-        model.addAttribute("return_url", "http://localhost:8080/order/return");
-        model.addAttribute("cancel_url", "http://localhost:8080/order/cancel");
-        model.addAttribute("notify_url", "http://localhost:8080/payment/notify");
-        model.addAttribute("order_id", orderId);
-        model.addAttribute("items", order.getItems());
-        model.addAttribute("currency", currency);
-        model.addAttribute("amount", amount);
-        model.addAttribute("first_name", firstName);
-        model.addAttribute("last_name", lastName);
-        model.addAttribute("email", email);
-        model.addAttribute("phone", phone);
-        model.addAttribute("address", address);
-        model.addAttribute("city", city);
-        model.addAttribute("country", "Sri Lanka");
-        model.addAttribute("hash", hash);
-
-        return "order/checkout";
+        RedirectView redirectView = new RedirectView();
+        redirectView.setUrl(redirectUrl);
+        return redirectView;
     }
+
+    private Map<String, String> getParams(PlaceOrderRequestDTO request, Order order, String hash) {
+        Map<String, String> params = new HashMap<>();
+        params.put("merchant_id", merchantId);
+        params.put("return_url", returnUrl);
+        params.put("cancel_url", cancelUrl);
+        params.put("notify_url", notifyUrl);
+        params.put("order_id", request.getOrderId());
+        params.put("items", order.getItems());
+        params.put("currency", request.getCurrency());
+        params.put("amount", request.getAmount().toString());
+        params.put("first_name", request.getFirstName());
+        params.put("last_name", request.getLastName());
+        params.put("email", request.getEmail());
+        params.put("phone", request.getPhone());
+        params.put("address", request.getAddress());
+        params.put("city", request.getCity());
+        params.put("country", "Sri Lanka");
+        params.put("recurrence", request.getRecurrence());
+        params.put("duration", request.getDuration());
+        params.put("hash", hash);
+        return params;
+    }
+
+    @GetMapping("/return")
+    public String handleReturn(@RequestParam("order_id") String orderId) {
+        orderService.updateOrderStatus(orderId, OrderStatus.SUCCESS);
+        return "redirect:/order/success?order_id=" + orderId;
+    }
+
+    @GetMapping("/cancel")
+    public String handleCancel(@RequestParam("order_id") String orderId) {
+        orderService.updateOrderStatus(orderId, OrderStatus.CANCELLED);
+        return "redirect:/order/failure?order_id=" + orderId;
+    }
+
+
 }
