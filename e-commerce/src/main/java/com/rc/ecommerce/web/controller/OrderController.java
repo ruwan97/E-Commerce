@@ -1,16 +1,15 @@
 package com.rc.ecommerce.web.controller;
 
+import com.rc.ecommerce.config.PayHereConfig;
 import com.rc.ecommerce.exception.EComException;
-import com.rc.ecommerce.model.dto.PlaceOrderResponseDTO;
 import com.rc.ecommerce.model.domain.Order;
 import com.rc.ecommerce.model.dto.PlaceOrderRequestDTO;
 import com.rc.ecommerce.model.enums.OrderStatus;
 import com.rc.ecommerce.service.OrderService;
-import com.rc.ecommerce.service.PayHereService;
+import com.rc.ecommerce.service.PaymentService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
@@ -26,22 +25,8 @@ public class OrderController {
     private static final Logger logger = LoggerFactory.getLogger(OrderController.class);
 
     private final OrderService orderService;
-    private final PayHereService payHereService;
-
-    @Value("${payHere.merchant.id}")
-    private String merchantId;
-
-    @Value("${payHere.notify.url}")
-    private String notifyUrl;
-
-    @Value("${payHere.return.url}")
-    private String returnUrl;
-
-    @Value("${payHere.cancel.url}")
-    private String cancelUrl;
-
-    @Value("${payHere.checkout.url}")
-    private String checkoutUrl;
+    private final PaymentService paymentService;
+    private final PayHereConfig payHereConfig;
 
     @RequestMapping("/")
     public String showOrderForm() {
@@ -51,7 +36,7 @@ public class OrderController {
     @PostMapping("/place")
     public RedirectView placeOrder(@RequestBody PlaceOrderRequestDTO request) throws EComException {
         // generate hash
-        String hash = payHereService.generateHash(request.getOrderId(), request.getAmount().doubleValue(), request.getCurrency());
+        String hash = paymentService.generateHash(request.getOrderId(), request.getAmount().doubleValue(), request.getCurrency());
         logger.debug("Hash: {}", hash);
 
         // save order
@@ -61,7 +46,7 @@ public class OrderController {
         Map<String, String> params = getParams(request, order, hash);
 
         // construct redirect URL
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(checkoutUrl);
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(payHereConfig.getCheckoutUrl());
         params.forEach(builder::queryParam);
         String redirectUrl = builder.build().encode().toUriString();
 
@@ -72,10 +57,10 @@ public class OrderController {
 
     private Map<String, String> getParams(PlaceOrderRequestDTO request, Order order, String hash) {
         Map<String, String> params = new HashMap<>();
-        params.put("merchant_id", merchantId);
-        params.put("return_url", returnUrl);
-        params.put("cancel_url", cancelUrl);
-        params.put("notify_url", notifyUrl);
+        params.put("merchant_id", payHereConfig.getMerchantId());
+        params.put("return_url", payHereConfig.getReturnUrl());
+        params.put("cancel_url", payHereConfig.getCancelUrl());
+        params.put("notify_url", payHereConfig.getNotifyUrl());
         params.put("order_id", request.getOrderId());
         params.put("items", order.getItems());
         params.put("currency", request.getCurrency());

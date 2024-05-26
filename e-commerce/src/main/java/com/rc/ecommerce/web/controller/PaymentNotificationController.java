@@ -1,9 +1,9 @@
 package com.rc.ecommerce.web.controller;
 
+import com.rc.ecommerce.exception.EComException;
 import com.rc.ecommerce.model.dto.PaymentNotificationDTO;
 import com.rc.ecommerce.model.enums.OrderStatus;
 import com.rc.ecommerce.service.OrderService;
-import com.rc.ecommerce.service.PayHereService;
 import com.rc.ecommerce.service.PaymentService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -14,23 +14,22 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/payHere")
-public class PayHereNotificationController {
-    private static final Logger logger = LoggerFactory.getLogger(PayHereNotificationController.class);
+@RequestMapping("/payment")
+public class PaymentNotificationController {
+    private static final Logger logger = LoggerFactory.getLogger(PaymentNotificationController.class);
 
     private final OrderService orderService;
-    private final PayHereService payHereService;
     private final PaymentService paymentService;
 
     @PostMapping("/notify")
-    public ResponseEntity<String> handleNotification(@RequestBody PaymentNotificationDTO notificationDTO) {
+    public ResponseEntity<String> handleNotification(@RequestBody PaymentNotificationDTO notificationDTO) throws EComException {
 
         // validate request
         if (!isValidNotificationRequest(notificationDTO)) {
-            return new ResponseEntity<>("Invalid payment notification", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Invalid payment notification request", HttpStatus.BAD_REQUEST);
         }
 
-        String localMd5sig = payHereService.generateMd5Sig(notificationDTO.getMerchantId(), notificationDTO.getOrderId(), notificationDTO.getPayhereAmount(), notificationDTO.getPayhereCurrency(), notificationDTO.getStatusCode());
+        String localMd5sig = paymentService.generateMd5Sig(notificationDTO.getMerchantId(), notificationDTO.getOrderId(), notificationDTO.getPayhereAmount(), notificationDTO.getPayhereCurrency(), notificationDTO.getStatusCode());
         logger.debug("Received payment notification for order : {}", notificationDTO.getOrderId());
         logger.debug("Received md5sig : {}", notificationDTO.getMd5sig());
         logger.debug("Calculated md5sig : {}", localMd5sig);
