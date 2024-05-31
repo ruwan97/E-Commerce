@@ -28,7 +28,7 @@ public class Payment {
     @JoinColumn(name = "payment_method_id")
     private PaymentMethod paymentMethod;
 
-    private String paymentId;
+    private long paymentId;
     private int statusCode;
     private String method;
     private String statusMessage;

@@ -7,7 +7,8 @@ public enum PaymentStatus {
     SUCCESS(2, "Success"),
     PENDING(0, "Pending"),
     CANCELED(-1, "Cancelled"),
-    FAILED(-2, "Failed");
+    FAILED(-2, "Failed"),
+    CHARGE_BACK(-3, "Charged Back");
 
     private final int id;
     private final String description;

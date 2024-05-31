@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 @Data
-public class PaymentNotificationDTO {
+public class PaymentNotifyDTO {
     @JsonProperty("merchant_id")
     private String merchantId;
 
@@ -12,16 +12,16 @@ public class PaymentNotificationDTO {
     private String orderId;
 
     @JsonProperty("payment_id")
-    private String paymentId;
+    private long paymentId;
 
     @JsonProperty("subscription_id")
     private String subscriptionId;
 
     @JsonProperty("payhere_amount")
-    private String payhereAmount;
+    private String payHereAmount;
 
     @JsonProperty("payhere_currency")
-    private String payhereCurrency;
+    private String payHereCurrency;
 
     @JsonProperty("status_code")
     private int statusCode;
@@ -62,9 +62,6 @@ public class PaymentNotificationDTO {
     @JsonProperty("item_rec_install_paid")
     private int itemRecInstallPaid;
 
-    @JsonProperty("customer_token")
-    private String customerToken;
-
     @JsonProperty("card_holder_name")
     private String cardHolderName;
 
@@ -73,4 +70,7 @@ public class PaymentNotificationDTO {
 
     @JsonProperty("card_expiry")
     private String cardExpiry;
+
+    @JsonProperty("customer_token")
+    private String customerToken;
 }
