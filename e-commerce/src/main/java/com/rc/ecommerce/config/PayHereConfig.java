@@ -72,7 +72,7 @@ public class PayHereConfig {
     @Value("${payHere.capture.url}")
     private String captureUrl;
 
-    public String getAccessToken() throws EComException {
+    public String getAccessToken() {
         if (accessToken == null) {
             synchronized (this) {
                 if (accessToken == null) {
@@ -80,9 +80,7 @@ public class PayHereConfig {
                         accessToken = retrieveAccessToken();
                     } catch (EComException e) {
                         logger.error("Failed to retrieve access token: {}", e.getMessage(), e);
-                        String errorMessage = String.format("Unable to fetch access token. Status code: %d, Error: %s",
-                                e.getStatusCode(), e.getMessage());
-                        throw new EComException(e.getStatusCode(), errorMessage);
+                        throw new RuntimeException("Failed to retrieve access token", e);
                     }
                 }
             }
