@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rc.ecommerce.exception.EComException;
 import lombok.Data;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.*;
@@ -20,6 +22,7 @@ import java.util.Map;
 @Configuration
 @Data
 public class PayHereConfig {
+    private static final Logger logger = LoggerFactory.getLogger(PayHereConfig.class);
 
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
@@ -37,7 +40,7 @@ public class PayHereConfig {
     private String merchantSecret;
 
     @Value("${payHere.access.token}")
-    private String accessToken;
+    private volatile String accessToken;
 
     @Value("${payHere.checkout.url}")
     private String checkoutUrl;
@@ -71,7 +74,18 @@ public class PayHereConfig {
 
     public String getAccessToken() throws EComException {
         if (accessToken == null) {
-            accessToken = retrieveAccessToken();
+            synchronized (this) {
+                if (accessToken == null) {
+                    try {
+                        accessToken = retrieveAccessToken();
+                    } catch (EComException e) {
+                        logger.error("Failed to retrieve access token: {}", e.getMessage(), e);
+                        String errorMessage = String.format("Unable to fetch access token. Status code: %d, Error: %s",
+                                e.getStatusCode(), e.getMessage());
+                        throw new EComException(e.getStatusCode(), errorMessage);
+                    }
+                }
+            }
         }
         return accessToken;
     }
@@ -98,7 +112,7 @@ public class PayHereConfig {
                 throw new EComException(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Failed to parse access token response");
             }
         } else {
-            throw new EComException(response.getStatusCodeValue(), "Failed to retrieve access token");
+            throw new EComException(response.getStatusCode().value(), "Failed to retrieve access token");
         }
     }
 

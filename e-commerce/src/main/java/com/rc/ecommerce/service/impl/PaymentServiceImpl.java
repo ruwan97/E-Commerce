@@ -72,7 +72,7 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public JsonNode getPaymentDetails(String orderId) throws EComException {
-        String accessToken = payHereConfig.getAccessToken();
+        String accessToken = getAccessToken();
 
         String url = UriComponentsBuilder.fromHttpUrl(payHereConfig.getPaymentDetailUrl())
                 .queryParam("order_id", orderId)
@@ -93,14 +93,14 @@ public class PaymentServiceImpl implements PaymentService {
                 throw new EComException(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Failed to parse payment details response");
             }
         } else {
-            throw new EComException(response.getStatusCodeValue(), "Failed to retrieve payment details");
+            throw new EComException(response.getStatusCode().value(), "Failed to retrieve payment details");
         }
     }
 
     @Override
     public RefundResponse refundPayment(RefundRequestDto refundRequest) throws EComException {
         HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(payHereConfig.getAccessToken());
+        headers.setBearerAuth(getAccessToken());
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         HttpEntity<RefundRequestDto> request = new HttpEntity<>(refundRequest, headers);
@@ -112,7 +112,7 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public CapturePaymentResponse capturePayment(CapturePaymentRequestDto request) throws EComException {
         HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer " + payHereConfig.getAccessToken());
+        headers.set("Authorization", "Bearer " + getAccessToken());
         headers.set("Content-Type", "application/json");
 
         Map<String, Object> body = Map.of(
@@ -141,7 +141,7 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public ChargeResponse chargeCustomer(ChargeRequest chargeRequest) throws EComException {
         HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(payHereConfig.getAccessToken());
+        headers.setBearerAuth(getAccessToken());
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         HttpEntity<ChargeRequest> requestEntity = new HttpEntity<>(chargeRequest, headers);
@@ -178,6 +178,10 @@ public class PaymentServiceImpl implements PaymentService {
         }
 
         return response;
+    }
+
+    private String getAccessToken() throws EComException {
+        return payHereConfig.getAccessToken();
     }
 
     private void updatePaymentInformation(ChargeRequest chargeRequest, ChargeResponse response) {

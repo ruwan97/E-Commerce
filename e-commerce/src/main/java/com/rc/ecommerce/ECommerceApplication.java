@@ -53,7 +53,7 @@ public class ECommerceApplication {
                 logger.info("Manager user registered successfully. user id : {}", manaUser.getId());
 
             } catch (IllegalArgumentException | EComException e) {
-                System.err.println("Error during default ADMIN & MANAGER user registration: " + e.getMessage());
+                logger.error("Error during default ADMIN & MANAGER user registration: " + e.getMessage());
             }
         };
     }

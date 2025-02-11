@@ -1,12 +1,12 @@
 package com.rc.ecommerce.service.impl;
 
+import com.rc.ecommerce.exception.EComException;
 import com.rc.ecommerce.model.domain.Role;
 import com.rc.ecommerce.model.domain.User;
 import com.rc.ecommerce.model.dto.ChangePasswordRequestDto;
 import com.rc.ecommerce.model.dto.RegistrationRequestDto;
 import com.rc.ecommerce.model.enums.UserRole;
 import com.rc.ecommerce.model.enums.UserStatus;
-import com.rc.ecommerce.exception.EComException;
 import com.rc.ecommerce.repository.UserRepository;
 import com.rc.ecommerce.service.UserService;
 import com.rc.ecommerce.util.CommonUtils;
